@@ -37,9 +37,35 @@
         .order-val { font-size: 1.1rem; font-weight: bold; color: #333; word-break: break-all; }
         .reception-val { font-size: 2rem; font-weight: 900; color: #e67e22; margin-top: 5px; }
         .waiting-msg { font-size: 1rem; color: #333; line-height: 1.5; margin-bottom: 20px; font-weight: bold; }
+
+        /* ✨ [New] 로딩 오버레이 스타일 */
+        #loadingOverlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* 반투명 검정 배경 */
+            z-index: 9999; /* 최상단 */
+            display: none; /* 기본 숨김 */
+            flex-direction: column; justify-content: center; align-items: center;
+            color: white; font-weight: bold; font-size: 1.2rem;
+            backdrop-filter: blur(3px); /* 배경 흐림 효과 추가 */
+        }
+        
+        /* 로딩 스피너 애니메이션 */
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #fff;
+            border-radius: 50%; width: 40px; height: 40px;
+            animation: spin 1s linear infinite; margin-bottom: 15px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
     </style>
 </head>
 <body>
+
+<div id="loadingOverlay">
+    <div class="spinner"></div>
+    <span>주문 확인 중...</span>
+</div>
 
 <header>🍴 프리미엄 스마트 오더</header>
 <div class="menu-container" id="menu-grid"></div>
@@ -207,7 +233,7 @@
             cart = []; updateUI();
             
             showStatusPopup(newOrderId, null);
-            startPolling(newOrderId); // 폴링 시작
+            startPolling(newOrderId); 
 
         } catch (e) {
             alert("전송 오류. 다시 시도해 주세요.");
@@ -215,11 +241,9 @@
         }
     }
 
-    // --- ✨ 5초마다 상태 확인 ---
+    // --- 5초 Polling ---
     function startPolling(orderId) {
         if (pollingInterval) clearInterval(pollingInterval);
-        
-        // 5초(5000ms)로 변경
         pollingInterval = setInterval(() => {
             checkOrderStatus(orderId);
             console.log("5초 자동 확인 중..."); 
@@ -233,7 +257,6 @@
         }
     }
 
-    // --- 주문 상태 확인 (읽기) ---
     async function checkOrderStatus(orderId) {
         try {
             const response = await fetch(`${GAS_URL}?orderId=${orderId}`);
@@ -292,14 +315,28 @@
         if (p.length === 2) return decodeURIComponent(p.pop().split(';').shift());
     }
 
-    window.onload = () => {
+    // ✨ [Modified] 접속 시 로직
+    window.onload = async () => {
+        // 로딩 화면 표시
+        const loader = document.getElementById('loadingOverlay');
+        loader.style.display = 'flex';
+
+        // 1. 유저 정보 체크
         checkUserInfo();
         
+        // 2. 주문번호 쿠키 체크
         const activeOrderId = getCookie("active_order_id");
         if (activeOrderId) {
-            checkOrderStatus(activeOrderId);
-            startPolling(activeOrderId);
+            // 서버에 상태 확인 (await로 기다림)
+            await checkOrderStatus(activeOrderId);
+            // 확인 후 팝업이 떴다면 폴링 시작
+            if (document.getElementById('successModal').style.display === 'flex') {
+                startPolling(activeOrderId);
+            }
         }
+
+        // 모든 체크가 끝나면 로딩 화면 숨김
+        loader.style.display = 'none';
     }
 </script>
 </body>
