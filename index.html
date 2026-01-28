@@ -27,22 +27,15 @@
             flex-shrink: 0;
         }
 
-        /* 메뉴 리스트 영역 */
         .menu-container {
-            flex: 1;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            padding: 15px;
-            overflow-y: auto;
-            padding-bottom: 250px; 
+            flex: 1; display: grid; grid-template-columns: 1fr 1fr;
+            gap: 12px; padding: 15px; overflow-y: auto; padding-bottom: 250px; 
         }
 
         .menu-item {
             background: white; border-radius: 15px; overflow: hidden;
             box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #eee;
-            display: flex; flex-direction: column;
-            height: auto; min-height: 240px;
+            display: flex; flex-direction: column; height: auto; min-height: 240px;
         }
 
         .menu-item:active { transform: scale(0.98); transition: 0.1s; }
@@ -74,7 +67,6 @@
             margin-top: auto;
         }
 
-        /* 하단 바 */
         .footer-nav {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background: white; box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
@@ -116,7 +108,6 @@
             font-size: 1.1rem; font-weight: bold; cursor: pointer;
         }
 
-        /* 공통 모달 스타일 */
         .modal {
             display: none; position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -131,8 +122,7 @@
 
         .user-input {
             width: 100%; padding: 12px; margin: 8px 0;
-            border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;
-            font-size: 1rem;
+            border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 1rem;
         }
 
         .save-user-btn {
@@ -188,7 +178,7 @@
 
 <script>
     // ⚠️ 수정된 GAS 배포 URL을 여기에 넣으세요!
-    const GAS_URL = "https://script.google.com/macros/s/AKfycby2V7PTAbMw2rcK35Qkt58uR1ewsWxGUDuNeami11-pGtGOZJ_Vape_REPXflucT6YNcw/exec";
+    const GAS_URL = "여기에_URL을_붙여넣으세요";
 
     const unifiedImage = "https://www.nordicnest.kr/assets/blobs/lyngby-porceln-23-cm/33618-03-01-2902fdeb01.jpg";
 
@@ -288,24 +278,26 @@
 
     function closeModal() { document.getElementById('orderModal').style.display = 'none'; }
 
-    // ✨ 주문번호 생성 함수 (YYYYMMDDHHmmss + 4자리 소수점)
+    // ✨ 초정밀 주문번호 생성 함수 (Web Crypto API 사용)
     function generateOrderId() {
         const now = new Date();
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, '0');
-        const day = String(now.getDate()).padStart(2, '0');
-        const hours = String(now.getHours()).padStart(2, '0');
-        const minutes = String(now.getMinutes()).padStart(2, '0');
-        const seconds = String(now.getSeconds()).padStart(2, '0');
-        
-        // 1/10000초 단위 정밀도 시뮬레이션
-        // performance.now()는 페이지 로드 후 지난 시간을 마이크로초 단위로 반환
-        // 예: 1234.5678 -> 뒤의 소수점 4자리를 사용
-        const perf = performance.now().toFixed(4).split('.')[1]; 
-        // 만약 performance가 0으로 끝나면 랜덤값으로 대체하여 유니크함 보장
-        const microSeconds = perf ? perf : Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+        // 날짜/시간 부분
+        const yyyy = now.getFullYear();
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const dd = String(now.getDate()).padStart(2, '0');
+        const hh = String(now.getHours()).padStart(2, '0');
+        const min = String(now.getMinutes()).padStart(2, '0');
+        const ss = String(now.getSeconds()).padStart(2, '0');
+        const mss = String(now.getMilliseconds()).padStart(3, '0'); // 밀리초(3자리)
 
-        return `${year}${month}${day}${hours}${minutes}${seconds}${microSeconds}`;
+        // 보안 난수 생성 (마이크로/나노초 대용으로 사용)
+        // 32비트 난수를 생성하여 4자리 이상으로 자릅니다.
+        const array = new Uint32Array(1);
+        window.crypto.getRandomValues(array);
+        const secureRandom = array[0].toString().slice(0, 4).padEnd(4, '0');
+
+        // 예: 20240129123001 + 123(밀리초) + 4829(보안난수)
+        return `${yyyy}${mm}${dd}${hh}${min}${ss}${mss}${secureRandom}`;
     }
 
     async function sendToSheet() {
@@ -315,11 +307,11 @@
         const orderSummary = cart.map(i => i.name).join(', ');
         const totalAmount = cart.reduce((sum, i) => sum + i.price, 0).toLocaleString() + "원";
         
-        // ✨ 주문번호 생성
+        // 정밀 주문번호 생성
         const newOrderId = generateOrderId();
 
         const payload = {
-            orderId: newOrderId, // 생성된 주문번호
+            orderId: newOrderId,
             username: currentUser.name,
             phone: currentUser.phone,
             order: orderSummary,
@@ -334,7 +326,7 @@
             });
 
             setCookie("lastOrder", orderSummary, 1);
-            alert(`[주문완료] 주문번호: ${newOrderId}\n${currentUser.name}님, 잠시만 기다려 주세요!`);
+            alert(`[주문접수완료]\n주문번호: ${newOrderId}\n\n${currentUser.name}님, 곧 준비해 드릴게요!`);
             cart = []; updateUI();
             location.reload(); 
         } catch (e) {
@@ -360,7 +352,7 @@
         if(last) {
             const box = document.getElementById('history-box');
             box.style.display = 'block';
-            box.innerHTML = `🕒 <b>최근 주문:</b><br>${last}`;
+            box.innerHTML = `🕒 <b>최근 주문(1시간 이내):</b><br>${last}`;
         }
     }
 </script>
