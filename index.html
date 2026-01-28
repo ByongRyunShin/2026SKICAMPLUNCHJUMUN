@@ -5,87 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>모바일 주문 키오스크</title>
     <style>
-        :root {
-            --primary-color: #e67e22;
-            --secondary-color: #2c3e50;
-            --bg-color: #f8f9fa;
-        }
-        body {
-            font-family: 'Pretendard', -apple-system, sans-serif;
-            margin: 0; padding: 0; background-color: var(--bg-color);
-            display: flex; flex-direction: column; height: 100vh; overflow: hidden;
-        }
-        header {
-            background-color: var(--secondary-color); color: white; padding: 15px;
-            text-align: center; font-size: 1.2rem; font-weight: bold; flex-shrink: 0;
-        }
-        .menu-container {
-            flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
-            padding: 15px; overflow-y: auto; padding-bottom: 250px; 
-        }
-        .menu-item {
-            background: white; border-radius: 15px; overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #eee;
-            display: flex; flex-direction: column; height: auto; min-height: 240px;
-        }
+        :root { --primary-color: #e67e22; --secondary-color: #2c3e50; --bg-color: #f8f9fa; }
+        body { font-family: 'Pretendard', sans-serif; margin: 0; padding: 0; background-color: var(--bg-color); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        header { background-color: var(--secondary-color); color: white; padding: 15px; text-align: center; font-size: 1.2rem; font-weight: bold; flex-shrink: 0; }
+        .menu-container { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 15px; overflow-y: auto; padding-bottom: 250px; }
+        .menu-item { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #eee; display: flex; flex-direction: column; height: auto; min-height: 240px; }
         .menu-item:active { transform: scale(0.98); transition: 0.1s; }
-        .menu-img {
-            width: 100%; height: 120px; object-fit: contain; background-color: white;
-            padding: 10px; box-sizing: border-box; flex-shrink: 0;
-        }
-        .menu-info {
-            padding: 12px 12px 15px 12px; text-align: center; flex: 1;
-            display: flex; flex-direction: column; justify-content: space-between;
-        }
+        .menu-img { width: 100%; height: 120px; object-fit: contain; background-color: white; padding: 10px; box-sizing: border-box; flex-shrink: 0; }
+        .menu-info { padding: 12px 12px 15px 12px; text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
         .menu-info h3 { margin: 0 0 8px 0; font-size: 0.9rem; font-weight: 700; color: #333; line-height: 1.3; }
         .menu-info p { color: var(--primary-color); font-weight: 800; margin: 0 0 10px 0; font-size: 1rem; }
-        .add-btn {
-            background: #fff5eb; color: var(--primary-color); border: 1px solid var(--primary-color);
-            padding: 10px; width: 100%; border-radius: 8px; font-weight: bold; margin-top: auto; cursor: pointer;
-        }
-        .footer-nav {
-            position: fixed; bottom: 0; left: 0; width: 100%; background: white;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.15); padding: 15px; box-sizing: border-box;
-            z-index: 90; border-top-left-radius: 20px; border-top-right-radius: 20px;
-        }
-        #cart-list-container {
-            max-height: 150px; overflow-y: auto; margin-bottom: 15px;
-            border-bottom: 1px solid #eee; display: none;
-        }
-        .cart-item-row {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 8px 0; border-bottom: 1px dashed #eee; font-size: 0.9rem;
-        }
+        .add-btn { background: #fff5eb; color: var(--primary-color); border: 1px solid var(--primary-color); padding: 10px; width: 100%; border-radius: 8px; font-weight: bold; margin-top: auto; cursor: pointer; }
+        .footer-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; box-shadow: 0 -4px 20px rgba(0,0,0,0.15); padding: 15px; box-sizing: border-box; z-index: 90; border-top-left-radius: 20px; border-top-right-radius: 20px; }
+        #cart-list-container { max-height: 150px; overflow-y: auto; margin-bottom: 15px; border-bottom: 1px solid #eee; display: none; }
+        .cart-item-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed #eee; font-size: 0.9rem; }
         .cart-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .order-btn {
-            width: 100%; background: var(--primary-color); color: white; border: none;
-            padding: 15px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer;
-        }
+        .order-btn { width: 100%; background: var(--primary-color); color: white; border: none; padding: 15px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; }
         .delete-btn { background: #fff; border: 1px solid #ff4757; color: #ff4757; border-radius: 5px; cursor: pointer;}
-
-        /* 모달 스타일 */
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 1000;
-        }
-        .modal-content {
-            background: white; padding: 25px; border-radius: 20px; width: 85%; max-width: 400px; text-align: center;
-        }
-        .user-input {
-            width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd;
-            border-radius: 8px; box-sizing: border-box; font-size: 1rem;
-        }
-        .save-user-btn {
-            width: 100%; padding: 12px; background: var(--secondary-color); color: white;
-            border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; margin-top: 15px; cursor: pointer;
-        }
+        
+        /* 모달 공통 */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: white; padding: 25px; border-radius: 20px; width: 85%; max-width: 400px; text-align: center; }
+        .user-input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
+        .save-user-btn { width: 100%; padding: 12px; background: var(--secondary-color); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; margin-top: 15px; cursor: pointer; }
         
         /* 완료 팝업 스타일 */
         #successModal .modal-content { border: 2px solid var(--primary-color); padding: 30px 20px; }
         .success-title { color: var(--primary-color); font-size: 1.4rem; margin-bottom: 10px; }
-        .order-info-box {
-            background: #f1f2f6; padding: 15px; border-radius: 8px; margin: 15px 0;
-        }
+        .order-info-box { background: #f1f2f6; padding: 15px; border-radius: 8px; margin: 15px 0; }
         .order-label { font-size: 0.8rem; color: #666; margin-bottom: 4px; display: block; }
         .order-val { font-size: 1.1rem; font-weight: bold; color: #333; word-break: break-all; }
         .reception-val { font-size: 2rem; font-weight: 900; color: #e67e22; margin-top: 5px; }
@@ -189,7 +136,9 @@
         const name = document.getElementById('userNameInput').value.trim();
         const phone = document.getElementById('userPhoneInput').value.trim();
         if (!name || !phone) return alert("정보를 입력해 주세요.");
-        setCookie("kiosk_username", name, 30*24); setCookie("kiosk_phone", phone, 30*24);
+        // 사용자 정보는 편의를 위해 30일 유지 (수정 없음)
+        setCookie("kiosk_username", name, 30*24); 
+        setCookie("kiosk_phone", phone, 30*24);
         currentUser.name = name; currentUser.phone = phone;
         document.getElementById('userInfoModal').style.display = 'none';
     }
@@ -225,8 +174,12 @@
         document.getElementById('order-details').innerHTML = cart.map(i => `• ${i.name}`).join('<br>');
         document.getElementById('orderModal').style.display = 'flex';
     }
+    
     function closeModal() { document.getElementById('orderModal').style.display = 'none'; }
-    function closeSuccessModal() { document.getElementById('successModal').style.display = 'none'; }
+    
+    function closeSuccessModal() { 
+        document.getElementById('successModal').style.display = 'none'; 
+    }
 
     // --- 주문 전송 ---
     async function sendToSheet() {
@@ -246,12 +199,13 @@
                 })
             });
 
-            // 주문 성공 시 쿠키 저장 및 팝업 표시
-            setCookie("active_order_id", newOrderId, 1); // 주문번호 쿠키 저장
+            // ✨ [수정됨] 쿠키 유지 시간을 2시간으로 설정
+            setCookie("active_order_id", newOrderId, 2); 
+
             closeModal();
             cart = []; updateUI();
             
-            // 즉시 팝업 띄우기 (접수 대기 상태)
+            // 팝업 즉시 표시
             showStatusPopup(newOrderId, null);
 
         } catch (e) {
@@ -263,15 +217,12 @@
     // --- 주문 상태 확인 (읽기) ---
     async function checkOrderStatus(orderId) {
         try {
-            // doGet 요청 (CORS 모드 사용)
             const response = await fetch(`${GAS_URL}?orderId=${orderId}`);
             const data = await response.json();
 
             if (data.status === "found") {
-                // 주문이 확인됨 -> 접수번호 확인
                 showStatusPopup(orderId, data.receptionNo);
             } else {
-                // 주문번호가 시트에 없음 (삭제됐거나 오류) -> 쿠키 삭제
                 setCookie("active_order_id", "", -1);
             }
         } catch (e) {
@@ -279,7 +230,6 @@
         }
     }
 
-    // --- 팝업 내용 결정 함수 ---
     function showStatusPopup(orderId, receptionNo) {
         const modal = document.getElementById('successModal');
         const title = document.getElementById('statusTitle');
@@ -290,13 +240,11 @@
         modal.style.display = 'flex';
 
         if (receptionNo && receptionNo.trim() !== "") {
-            // Case B: 접수번호 있음
             title.innerText = "🔔 주문 접수 완료!";
             rArea.style.display = 'block';
             document.getElementById('displayReceptionNo').innerText = receptionNo + "번";
             msg.innerHTML = "접수가 완료되었습니다.<br>메뉴가 준비될 때까지 기다려주세요.";
         } else {
-            // Case A: 접수번호 없음 (대기중)
             title.innerText = "⏳ 주문 대기중";
             rArea.style.display = 'none';
             msg.innerHTML = "주문이 전송되었습니다.<br>접수번호가 표출될 때까지 잠시만 기다려주세요.";
@@ -314,20 +262,21 @@
         return `${y}${m}${d}${h}${mi}${s}${ms}${rnd}`;
     }
 
+    // 쿠키 설정 함수 (h: 시간)
     function setCookie(n, v, h) {
         const d = new Date(); d.setTime(d.getTime() + (h*60*60*1000));
         document.cookie = `${n}=${encodeURIComponent(v)};expires=${d.toUTCString()};path=/`;
     }
+    
     function getCookie(n) {
         const v = `; ${document.cookie}`; const p = v.split(`; ${n}=`);
         if (p.length === 2) return decodeURIComponent(p.pop().split(';').shift());
     }
 
-    // 페이지 로드 시 실행
     window.onload = () => {
-        checkUserInfo(); // 유저 정보 체크
+        checkUserInfo();
         
-        // 활성화된 주문번호가 있는지 확인
+        // 접속 시 쿠키 확인
         const activeOrderId = getCookie("active_order_id");
         if (activeOrderId) {
             checkOrderStatus(activeOrderId);
