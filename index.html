@@ -129,7 +129,6 @@
             border-radius: 20px; width: 85%; max-width: 400px; text-align: center;
         }
 
-        /* 유저 정보 입력 모달 스타일 */
         .user-input {
             width: 100%; padding: 12px; margin: 8px 0;
             border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;
@@ -189,7 +188,7 @@
 
 <script>
     // ⚠️ 수정된 GAS 배포 URL을 여기에 넣으세요!
-    const GAS_URL = "여기에_URL을_붙여넣으세요";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycby2V7PTAbMw2rcK35Qkt58uR1ewsWxGUDuNeami11-pGtGOZJ_Vape_REPXflucT6YNcw/exec";
 
     const unifiedImage = "https://www.nordicnest.kr/assets/blobs/lyngby-porceln-23-cm/33618-03-01-2902fdeb01.jpg";
 
@@ -210,8 +209,6 @@
     ];
 
     let cart = [];
-    
-    // 전역 변수로 사용자 정보 관리
     let currentUser = { name: "", phone: "" };
 
     const grid = document.getElementById('menu-grid');
@@ -227,45 +224,26 @@
             </div>`;
     });
 
-    // --- 사용자 정보 관련 함수 ---
-
-    // 1. 사용자 정보 저장 (쿠키 30일 유지)
     function saveUserInfo() {
         const name = document.getElementById('userNameInput').value.trim();
         const phone = document.getElementById('userPhoneInput').value.trim();
-
-        if (!name || !phone) {
-            alert("이름과 전화번호를 모두 입력해 주세요.");
-            return;
-        }
-
-        // 쿠키 저장
-        setCookie("kiosk_username", name, 30 * 24); // 30일
+        if (!name || !phone) return alert("이름과 전화번호를 모두 입력해 주세요.");
+        setCookie("kiosk_username", name, 30 * 24);
         setCookie("kiosk_phone", phone, 30 * 24);
-
-        currentUser.name = name;
-        currentUser.phone = phone;
-
+        currentUser.name = name; currentUser.phone = phone;
         document.getElementById('userInfoModal').style.display = 'none';
-        alert(`${name}님, 환영합니다! 주문을 시작해 주세요.`);
+        alert(`${name}님, 환영합니다!`);
     }
 
-    // 2. 초기 로드 시 체크
     function checkUserInfo() {
         const name = getCookie("kiosk_username");
         const phone = getCookie("kiosk_phone");
-
         if (name && phone) {
-            // 정보가 있으면 모달 안 띄우고 변수에 저장
-            currentUser.name = name;
-            currentUser.phone = phone;
+            currentUser.name = name; currentUser.phone = phone;
         } else {
-            // 정보 없으면 모달 띄움 (강제)
             document.getElementById('userInfoModal').style.display = 'flex';
         }
     }
-
-    // --- 기존 주문 로직 ---
 
     function addToCart(name, price) {
         cart.push({name, price});
@@ -287,12 +265,9 @@
     function renderCartList() {
         const listContainer = document.getElementById('cart-list-container');
         if (cart.length === 0) {
-            listContainer.style.display = 'none';
-            listContainer.innerHTML = '';
-            return;
+            listContainer.style.display = 'none'; listContainer.innerHTML = ''; return;
         }
-        listContainer.style.display = 'block';
-        listContainer.innerHTML = '';
+        listContainer.style.display = 'block'; listContainer.innerHTML = '';
         cart.forEach((item, index) => {
             const div = document.createElement('div');
             div.className = 'cart-item-row';
@@ -313,17 +288,40 @@
 
     function closeModal() { document.getElementById('orderModal').style.display = 'none'; }
 
+    // ✨ 주문번호 생성 함수 (YYYYMMDDHHmmss + 4자리 소수점)
+    function generateOrderId() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        
+        // 1/10000초 단위 정밀도 시뮬레이션
+        // performance.now()는 페이지 로드 후 지난 시간을 마이크로초 단위로 반환
+        // 예: 1234.5678 -> 뒤의 소수점 4자리를 사용
+        const perf = performance.now().toFixed(4).split('.')[1]; 
+        // 만약 performance가 0으로 끝나면 랜덤값으로 대체하여 유니크함 보장
+        const microSeconds = perf ? perf : Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+
+        return `${year}${month}${day}${hours}${minutes}${seconds}${microSeconds}`;
+    }
+
     async function sendToSheet() {
         const btn = document.getElementById('submit-btn');
         btn.innerText = "전송 중..."; btn.disabled = true;
 
         const orderSummary = cart.map(i => i.name).join(', ');
         const totalAmount = cart.reduce((sum, i) => sum + i.price, 0).toLocaleString() + "원";
+        
+        // ✨ 주문번호 생성
+        const newOrderId = generateOrderId();
 
-        // 전송할 데이터 객체
         const payload = {
-            username: currentUser.name, // 사용자 이름
-            phone: currentUser.phone,   // 전화번호
+            orderId: newOrderId, // 생성된 주문번호
+            username: currentUser.name,
+            phone: currentUser.phone,
             order: orderSummary,
             total: totalAmount
         };
@@ -335,8 +333,8 @@
                 body: JSON.stringify(payload)
             });
 
-            setCookie("lastOrder", orderSummary, 1); // 1시간 쿠키 (주문내역)
-            alert(`${currentUser.name}님, 주문이 완료되었습니다!`);
+            setCookie("lastOrder", orderSummary, 1);
+            alert(`[주문완료] 주문번호: ${newOrderId}\n${currentUser.name}님, 잠시만 기다려 주세요!`);
             cart = []; updateUI();
             location.reload(); 
         } catch (e) {
@@ -345,7 +343,6 @@
         }
     }
 
-    // 쿠키 함수 (hours 단위)
     function setCookie(n, v, h) {
         const d = new Date(); d.setTime(d.getTime() + (h*60*60*1000));
         document.cookie = `${n}=${encodeURIComponent(v)};expires=${d.toUTCString()};path=/`;
@@ -358,14 +355,12 @@
     }
 
     window.onload = () => {
-        checkUserInfo(); // 1. 사용자 정보 확인
-        
-        // 2. 이전 주문 내역 확인
+        checkUserInfo();
         const last = getCookie("lastOrder");
         if(last) {
             const box = document.getElementById('history-box');
             box.style.display = 'block';
-            box.innerHTML = `🕒 <b>최근 주문(1시간 이내):</b><br>${last}`;
+            box.innerHTML = `🕒 <b>최근 주문:</b><br>${last}`;
         }
     }
 </script>
