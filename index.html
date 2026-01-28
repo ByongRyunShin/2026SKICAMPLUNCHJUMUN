@@ -10,166 +10,97 @@
             --secondary-color: #2c3e50;
             --bg-color: #f8f9fa;
         }
-
         body {
             font-family: 'Pretendard', -apple-system, sans-serif;
-            margin: 0; padding: 0;
-            background-color: var(--bg-color);
-            display: flex; flex-direction: column;
-            height: 100vh; overflow: hidden;
+            margin: 0; padding: 0; background-color: var(--bg-color);
+            display: flex; flex-direction: column; height: 100vh; overflow: hidden;
         }
-
         header {
-            background-color: var(--secondary-color);
-            color: white; padding: 15px;
-            text-align: center; font-size: 1.2rem; font-weight: bold;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            flex-shrink: 0;
+            background-color: var(--secondary-color); color: white; padding: 15px;
+            text-align: center; font-size: 1.2rem; font-weight: bold; flex-shrink: 0;
         }
-
         .menu-container {
-            flex: 1; display: grid; grid-template-columns: 1fr 1fr;
-            gap: 12px; padding: 15px; overflow-y: auto; padding-bottom: 250px; 
+            flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+            padding: 15px; overflow-y: auto; padding-bottom: 250px; 
         }
-
         .menu-item {
             background: white; border-radius: 15px; overflow: hidden;
             box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #eee;
             display: flex; flex-direction: column; height: auto; min-height: 240px;
         }
-
         .menu-item:active { transform: scale(0.98); transition: 0.1s; }
-
         .menu-img {
-            width: 100%; height: 120px; object-fit: contain;
-            background-color: white; padding: 10px; box-sizing: border-box; flex-shrink: 0;
+            width: 100%; height: 120px; object-fit: contain; background-color: white;
+            padding: 10px; box-sizing: border-box; flex-shrink: 0;
         }
-
         .menu-info {
-            padding: 12px 12px 15px 12px; text-align: center;
-            flex: 1; display: flex; flex-direction: column; justify-content: space-between;
+            padding: 12px 12px 15px 12px; text-align: center; flex: 1;
+            display: flex; flex-direction: column; justify-content: space-between;
         }
-
-        .menu-info h3 {
-            margin: 0 0 8px 0; font-size: 0.9rem; font-weight: 700;
-            word-break: keep-all; color: #333; line-height: 1.3;
-        }
-
-        .menu-info p {
-            color: var(--primary-color); font-weight: 800;
-            margin: 0 0 10px 0; font-size: 1rem;
-        }
-
+        .menu-info h3 { margin: 0 0 8px 0; font-size: 0.9rem; font-weight: 700; color: #333; line-height: 1.3; }
+        .menu-info p { color: var(--primary-color); font-weight: 800; margin: 0 0 10px 0; font-size: 1rem; }
         .add-btn {
-            background: #fff5eb; color: var(--primary-color);
-            border: 1px solid var(--primary-color); padding: 10px; width: 100%;
-            border-radius: 8px; font-weight: bold; font-size: 0.9rem; cursor: pointer;
-            margin-top: auto;
+            background: #fff5eb; color: var(--primary-color); border: 1px solid var(--primary-color);
+            padding: 10px; width: 100%; border-radius: 8px; font-weight: bold; margin-top: auto; cursor: pointer;
         }
-
         .footer-nav {
-            position: fixed; bottom: 0; left: 0; width: 100%;
-            background: white; box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
-            padding: 15px; box-sizing: border-box; z-index: 90;
-            border-top-left-radius: 20px; border-top-right-radius: 20px;
+            position: fixed; bottom: 0; left: 0; width: 100%; background: white;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.15); padding: 15px; box-sizing: border-box;
+            z-index: 90; border-top-left-radius: 20px; border-top-right-radius: 20px;
         }
-
-        #history-box {
-            background: #f1f2f6; padding: 8px 12px; margin-bottom: 10px;
-            border-radius: 8px; font-size: 0.8rem; color: #666;
-            display: none; border-left: 4px solid var(--primary-color);
-        }
-
         #cart-list-container {
             max-height: 150px; overflow-y: auto; margin-bottom: 15px;
             border-bottom: 1px solid #eee; display: none;
         }
-
         .cart-item-row {
             display: flex; justify-content: space-between; align-items: center;
             padding: 8px 0; border-bottom: 1px dashed #eee; font-size: 0.9rem;
         }
-        
-        .cart-item-name { flex: 1; padding-right: 10px; }
-        .cart-item-price { font-weight: bold; margin-right: 10px; }
-        
-        .delete-btn {
-            background: #fff; border: 1px solid #ff4757; color: #ff4757;
-            border-radius: 5px; padding: 4px 8px; font-size: 0.8rem; cursor: pointer;
-        }
-
-        .cart-info {
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
-        }
-
+        .cart-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .order-btn {
-            width: 100%; background: var(--primary-color); color: white;
-            border: none; padding: 15px; border-radius: 12px;
-            font-size: 1.1rem; font-weight: bold; cursor: pointer;
+            width: 100%; background: var(--primary-color); color: white; border: none;
+            padding: 15px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer;
         }
+        .delete-btn { background: #fff; border: 1px solid #ff4757; color: #ff4757; border-radius: 5px; cursor: pointer;}
 
-        /* 공통 모달 스타일 */
+        /* 모달 스타일 */
         .modal {
-            display: none; position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7);
-            justify-content: center; align-items: center; z-index: 1000;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 1000;
         }
-
         .modal-content {
-            background: white; padding: 25px;
-            border-radius: 20px; width: 85%; max-width: 400px; text-align: center;
+            background: white; padding: 25px; border-radius: 20px; width: 85%; max-width: 400px; text-align: center;
         }
-
         .user-input {
-            width: 100%; padding: 12px; margin: 8px 0;
-            border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 1rem;
+            width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd;
+            border-radius: 8px; box-sizing: border-box; font-size: 1rem;
         }
-
         .save-user-btn {
-            width: 100%; padding: 12px; background: var(--secondary-color);
-            color: white; border: none; border-radius: 8px;
-            font-size: 1.1rem; font-weight: bold; margin-top: 15px; cursor: pointer;
-        }
-
-        .modal-list {
-            text-align: left; background: #f9f9f9; padding: 15px;
-            border-radius: 10px; margin: 15px 0; max-height: 200px; overflow-y: auto;
-        }
-
-        /* ✨ 완료 팝업 전용 스타일 (New) */
-        #successModal .modal-content {
-            border: 2px solid var(--primary-color);
-            padding: 40px 20px;
+            width: 100%; padding: 12px; background: var(--secondary-color); color: white;
+            border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; margin-top: 15px; cursor: pointer;
         }
         
-        .success-title {
-            color: var(--primary-color); font-size: 1.5rem; margin-bottom: 10px;
+        /* 완료 팝업 스타일 */
+        #successModal .modal-content { border: 2px solid var(--primary-color); padding: 30px 20px; }
+        .success-title { color: var(--primary-color); font-size: 1.4rem; margin-bottom: 10px; }
+        .order-info-box {
+            background: #f1f2f6; padding: 15px; border-radius: 8px; margin: 15px 0;
         }
-        
-        .order-id-display {
-            font-size: 1.1rem; font-weight: bold; background: #f1f2f6;
-            padding: 10px; border-radius: 8px; margin: 15px 0; word-break: break-all;
-        }
-        
-        .waiting-msg {
-            font-size: 1.1rem; color: #333; line-height: 1.6; margin-bottom: 30px;
-            font-weight: bold;
-        }
-
+        .order-label { font-size: 0.8rem; color: #666; margin-bottom: 4px; display: block; }
+        .order-val { font-size: 1.1rem; font-weight: bold; color: #333; word-break: break-all; }
+        .reception-val { font-size: 2rem; font-weight: 900; color: #e67e22; margin-top: 5px; }
+        .waiting-msg { font-size: 1rem; color: #333; line-height: 1.5; margin-bottom: 20px; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <header>🍴 프리미엄 스마트 오더</header>
-
 <div class="menu-container" id="menu-grid"></div>
 
 <div class="footer-nav">
-    <div id="history-box"></div>
     <div id="cart-list-container"></div>
     <div class="cart-info">
-        <span id="cart-count" style="font-weight: bold;">선택된 메뉴: 0개</span>
+        <span id="cart-count" style="font-weight: bold;">선택: 0개</span>
         <span id="cart-total" style="color: var(--primary-color); font-weight: 800; font-size: 1.1rem;">0원</span>
     </div>
     <button class="order-btn" onclick="openModal()">주문 전송하기</button>
@@ -178,44 +109,50 @@
 <div class="modal" id="userInfoModal" style="z-index: 2000;">
     <div class="modal-content">
         <h2 style="margin-top: 0;">환영합니다! 👋</h2>
-        <p style="color:#666; font-size:0.9rem; margin-bottom:20px;">
-            원활한 주문을 위해<br>최초 1회 정보를 입력해 주세요.
-        </p>
-        <input type="text" id="userNameInput" class="user-input" placeholder="이름 (예: 홍길동)">
-        <input type="tel" id="userPhoneInput" class="user-input" placeholder="휴대폰 번호 (예: 010-1234-5678)">
+        <p style="color:#666; font-size:0.9rem; margin-bottom:20px;">원활한 주문을 위해 정보를 입력해 주세요.</p>
+        <input type="text" id="userNameInput" class="user-input" placeholder="이름">
+        <input type="tel" id="userPhoneInput" class="user-input" placeholder="휴대폰 번호">
         <button class="save-user-btn" onclick="saveUserInfo()">입력 완료</button>
     </div>
 </div>
 
 <div class="modal" id="orderModal">
     <div class="modal-content">
-        <h2 style="margin-top: 0; font-size: 1.2rem;">주문하시겠습니까?</h2>
-        <div class="modal-list" id="order-details"></div>
+        <h3 style="margin-top: 0;">주문하시겠습니까?</h3>
+        <div id="order-details" style="text-align:left; background:#f9f9f9; padding:15px; border-radius:10px; margin:15px 0; max-height:200px; overflow-y:auto;"></div>
         <div style="display:flex; gap:10px;">
-            <button style="flex:1; padding:12px; border:none; border-radius:10px; background:#eee; font-weight:bold; cursor:pointer;" onclick="closeModal()">취소</button>
-            <button id="submit-btn" style="flex:1; padding:12px; border:none; border-radius:10px; background:var(--primary-color); color:white; font-weight:bold; cursor:pointer;" onclick="sendToSheet()">확인</button>
+            <button style="flex:1; padding:12px; border:none; border-radius:10px; background:#eee;" onclick="closeModal()">취소</button>
+            <button id="submit-btn" style="flex:1; padding:12px; border:none; border-radius:10px; background:var(--primary-color); color:white; font-weight:bold;" onclick="sendToSheet()">확인</button>
         </div>
     </div>
 </div>
 
 <div class="modal" id="successModal" style="z-index: 3000;">
     <div class="modal-content">
-        <h2 class="success-title">✅ 주문 완료</h2>
-        <div class="order-id-display">주문번호<br><span id="displayOrderId" style="color:#333; font-size:0.9rem;"></span></div>
-        <p class="waiting-msg">
-            주문 접수중입니다.<br>
-            접수된 후 접수번호가 표출 됩니다.
+        <h2 class="success-title" id="statusTitle">✅ 주문 접수중</h2>
+        
+        <div class="order-info-box">
+            <span class="order-label">주문번호</span>
+            <div class="order-val" id="displayOrderId"></div>
+            
+            <div id="receptionArea" style="display:none; margin-top:15px; border-top:1px dashed #ccc; padding-top:10px;">
+                <span class="order-label">접수번호</span>
+                <div class="reception-val" id="displayReceptionNo"></div>
+            </div>
+        </div>
+
+        <p class="waiting-msg" id="statusMsg">
+            주문이 접수되었습니다.<br>접수번호가 나올 때까지 잠시만 기다려주세요.
         </p>
-        <button class="save-user-btn" onclick="finishOrder()">추가 주문하기</button>
+        <button class="save-user-btn" onclick="closeSuccessModal()">창 닫기 (추가 주문)</button>
     </div>
 </div>
 
 <script>
-    // ⚠️ 수정된 GAS 배포 URL을 여기에 넣으세요!
-    const GAS_URL = "https://script.google.com/macros/s/AKfycby2V7PTAbMw2rcK35Qkt58uR1ewsWxGUDuNeami11-pGtGOZJ_Vape_REPXflucT6YNcw/exec";
+    // ⚠️ 수정된 GAS 배포 URL을 입력하세요!
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbxLdJiSGGUbKnRpvRjz7X7RBW-h0GFeVFZ5QkgsQZk6m1L0qAfJwU8jAkk2s3MPPFY5aQ/exec";
 
     const unifiedImage = "https://www.nordicnest.kr/assets/blobs/lyngby-porceln-23-cm/33618-03-01-2902fdeb01.jpg";
-
     const menuData = [
         { name: "사골 소고기 미역국", price: 9500, img: unifiedImage },
         { name: "뭉텅 김치찌개", price: 9000, img: unifiedImage },
@@ -251,56 +188,35 @@
     function saveUserInfo() {
         const name = document.getElementById('userNameInput').value.trim();
         const phone = document.getElementById('userPhoneInput').value.trim();
-        if (!name || !phone) return alert("이름과 전화번호를 모두 입력해 주세요.");
-        setCookie("kiosk_username", name, 30 * 24);
-        setCookie("kiosk_phone", phone, 30 * 24);
+        if (!name || !phone) return alert("정보를 입력해 주세요.");
+        setCookie("kiosk_username", name, 30*24); setCookie("kiosk_phone", phone, 30*24);
         currentUser.name = name; currentUser.phone = phone;
         document.getElementById('userInfoModal').style.display = 'none';
-        alert(`${name}님, 환영합니다!`);
     }
 
     function checkUserInfo() {
         const name = getCookie("kiosk_username");
         const phone = getCookie("kiosk_phone");
-        if (name && phone) {
-            currentUser.name = name; currentUser.phone = phone;
-        } else {
-            document.getElementById('userInfoModal').style.display = 'flex';
-        }
+        if (name && phone) { currentUser.name = name; currentUser.phone = phone; }
+        else { document.getElementById('userInfoModal').style.display = 'flex'; }
     }
 
-    function addToCart(name, price) {
-        cart.push({name, price});
-        updateUI();
-    }
-
-    function removeFromCart(index) {
-        cart.splice(index, 1);
-        updateUI();
-    }
-
+    function addToCart(n, p) { cart.push({name:n, price:p}); updateUI(); }
+    function removeFromCart(i) { cart.splice(i, 1); updateUI(); }
+    
     function updateUI() {
-        const total = cart.reduce((sum, i) => sum + i.price, 0);
-        document.getElementById('cart-count').innerText = `선택된 메뉴: ${cart.length}개`;
-        document.getElementById('cart-total').innerText = `${total.toLocaleString()}원`;
+        const t = cart.reduce((s, i) => s + i.price, 0);
+        document.getElementById('cart-count').innerText = `선택: ${cart.length}개`;
+        document.getElementById('cart-total').innerText = `${t.toLocaleString()}원`;
         renderCartList();
     }
 
     function renderCartList() {
-        const listContainer = document.getElementById('cart-list-container');
-        if (cart.length === 0) {
-            listContainer.style.display = 'none'; listContainer.innerHTML = ''; return;
-        }
-        listContainer.style.display = 'block'; listContainer.innerHTML = '';
-        cart.forEach((item, index) => {
-            const div = document.createElement('div');
-            div.className = 'cart-item-row';
-            div.innerHTML = `
-                <span class="cart-item-name">${item.name}</span>
-                <span class="cart-item-price">${item.price.toLocaleString()}원</span>
-                <button class="delete-btn" onclick="event.stopPropagation(); removeFromCart(${index})">삭제</button>
-            `;
-            listContainer.appendChild(div);
+        const c = document.getElementById('cart-list-container');
+        if (cart.length === 0) { c.style.display = 'none'; return; }
+        c.style.display = 'block'; c.innerHTML = '';
+        cart.forEach((it, idx) => {
+            c.innerHTML += `<div class="cart-item-row"><span style="flex:1">${it.name}</span><span style="font-weight:bold;margin-right:10px">${it.price.toLocaleString()}원</span><button class="delete-btn" onclick="event.stopPropagation();removeFromCart(${idx})">삭제</button></div>`;
         });
     }
 
@@ -309,91 +225,112 @@
         document.getElementById('order-details').innerHTML = cart.map(i => `• ${i.name}`).join('<br>');
         document.getElementById('orderModal').style.display = 'flex';
     }
-
     function closeModal() { document.getElementById('orderModal').style.display = 'none'; }
+    function closeSuccessModal() { document.getElementById('successModal').style.display = 'none'; }
 
-    // 완료 모달 닫고 리셋하는 함수
-    function finishOrder() {
-        document.getElementById('successModal').style.display = 'none';
-        cart = []; 
-        updateUI();
-        location.reload(); // 새로고침하여 초기화
-    }
-
-    // 초정밀 주문번호 생성
-    function generateOrderId() {
-        const now = new Date();
-        const yyyy = now.getFullYear();
-        const mm = String(now.getMonth() + 1).padStart(2, '0');
-        const dd = String(now.getDate()).padStart(2, '0');
-        const hh = String(now.getHours()).padStart(2, '0');
-        const min = String(now.getMinutes()).padStart(2, '0');
-        const ss = String(now.getSeconds()).padStart(2, '0');
-        const mss = String(now.getMilliseconds()).padStart(3, '0');
-        const array = new Uint32Array(1);
-        window.crypto.getRandomValues(array);
-        const secureRandom = array[0].toString().slice(0, 4).padEnd(4, '0');
-        return `${yyyy}${mm}${dd}${hh}${min}${ss}${mss}${secureRandom}`;
-    }
-
+    // --- 주문 전송 ---
     async function sendToSheet() {
         const btn = document.getElementById('submit-btn');
         btn.innerText = "전송 중..."; btn.disabled = true;
 
         const orderSummary = cart.map(i => i.name).join(', ');
         const totalAmount = cart.reduce((sum, i) => sum + i.price, 0).toLocaleString() + "원";
-        
         const newOrderId = generateOrderId();
-
-        const payload = {
-            orderId: newOrderId,
-            username: currentUser.name,
-            phone: currentUser.phone,
-            order: orderSummary,
-            total: totalAmount
-        };
 
         try {
             await fetch(GAS_URL, {
-                method: 'POST',
-                mode: 'no-cors', 
-                body: JSON.stringify(payload)
+                method: 'POST', mode: 'no-cors',
+                body: JSON.stringify({
+                    orderId: newOrderId, username: currentUser.name, phone: currentUser.phone,
+                    order: orderSummary, total: totalAmount
+                })
             });
 
-            // 1. 쿠키 저장
-            setCookie("lastOrder", orderSummary, 1);
-            
-            // 2. 주문 확인창 닫기
+            // 주문 성공 시 쿠키 저장 및 팝업 표시
+            setCookie("active_order_id", newOrderId, 1); // 주문번호 쿠키 저장
             closeModal();
-
-            // 3. ✨ 주문 완료 팝업 띄우기 (alert 대체)
-            document.getElementById('displayOrderId').innerText = newOrderId;
-            document.getElementById('successModal').style.display = 'flex';
+            cart = []; updateUI();
+            
+            // 즉시 팝업 띄우기 (접수 대기 상태)
+            showStatusPopup(newOrderId, null);
 
         } catch (e) {
-            alert("전송 오류 발생. 다시 시도해 주세요.");
+            alert("전송 오류. 다시 시도해 주세요.");
             btn.innerText = "확인"; btn.disabled = false;
         }
+    }
+
+    // --- 주문 상태 확인 (읽기) ---
+    async function checkOrderStatus(orderId) {
+        try {
+            // doGet 요청 (CORS 모드 사용)
+            const response = await fetch(`${GAS_URL}?orderId=${orderId}`);
+            const data = await response.json();
+
+            if (data.status === "found") {
+                // 주문이 확인됨 -> 접수번호 확인
+                showStatusPopup(orderId, data.receptionNo);
+            } else {
+                // 주문번호가 시트에 없음 (삭제됐거나 오류) -> 쿠키 삭제
+                setCookie("active_order_id", "", -1);
+            }
+        } catch (e) {
+            console.error("상태 확인 실패", e);
+        }
+    }
+
+    // --- 팝업 내용 결정 함수 ---
+    function showStatusPopup(orderId, receptionNo) {
+        const modal = document.getElementById('successModal');
+        const title = document.getElementById('statusTitle');
+        const msg = document.getElementById('statusMsg');
+        const rArea = document.getElementById('receptionArea');
+        
+        document.getElementById('displayOrderId').innerText = orderId;
+        modal.style.display = 'flex';
+
+        if (receptionNo && receptionNo.trim() !== "") {
+            // Case B: 접수번호 있음
+            title.innerText = "🔔 주문 접수 완료!";
+            rArea.style.display = 'block';
+            document.getElementById('displayReceptionNo').innerText = receptionNo + "번";
+            msg.innerHTML = "접수가 완료되었습니다.<br>메뉴가 준비될 때까지 기다려주세요.";
+        } else {
+            // Case A: 접수번호 없음 (대기중)
+            title.innerText = "⏳ 주문 대기중";
+            rArea.style.display = 'none';
+            msg.innerHTML = "주문이 전송되었습니다.<br>접수번호가 표출될 때까지 잠시만 기다려주세요.";
+        }
+    }
+
+    function generateOrderId() {
+        const now = new Date();
+        const y = now.getFullYear(); const m = String(now.getMonth()+1).padStart(2,'0');
+        const d = String(now.getDate()).padStart(2,'0'); const h = String(now.getHours()).padStart(2,'0');
+        const mi = String(now.getMinutes()).padStart(2,'0'); const s = String(now.getSeconds()).padStart(2,'0');
+        const ms = String(now.getMilliseconds()).padStart(3,'0');
+        const array = new Uint32Array(1); window.crypto.getRandomValues(array);
+        const rnd = array[0].toString().slice(0,4).padEnd(4,'0');
+        return `${y}${m}${d}${h}${mi}${s}${ms}${rnd}`;
     }
 
     function setCookie(n, v, h) {
         const d = new Date(); d.setTime(d.getTime() + (h*60*60*1000));
         document.cookie = `${n}=${encodeURIComponent(v)};expires=${d.toUTCString()};path=/`;
     }
-
     function getCookie(n) {
-        const v = `; ${document.cookie}`;
-        const p = v.split(`; ${n}=`);
+        const v = `; ${document.cookie}`; const p = v.split(`; ${n}=`);
         if (p.length === 2) return decodeURIComponent(p.pop().split(';').shift());
     }
 
+    // 페이지 로드 시 실행
     window.onload = () => {
-        checkUserInfo();
-        const last = getCookie("lastOrder");
-        if(last) {
-            const box = document.getElementById('history-box');
-            box.style.display = 'block';
-            box.innerHTML = `🕒 <b>최근 주문(1시간 이내):</b><br>${last}`;
+        checkUserInfo(); // 유저 정보 체크
+        
+        // 활성화된 주문번호가 있는지 확인
+        const activeOrderId = getCookie("active_order_id");
+        if (activeOrderId) {
+            checkOrderStatus(activeOrderId);
         }
     }
 </script>
