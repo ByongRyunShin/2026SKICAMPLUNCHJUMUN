@@ -89,7 +89,8 @@
         </div>
 
         <p class="waiting-msg" id="statusMsg">
-            주문이 접수되었습니다.<br>접수번호가 나올 때까지 잠시만 기다려주세요.
+            주문이 접수되었습니다.<br>접수번호가 나올 때까지 잠시만 기다려주세요.<br>
+            <span style="font-size:0.8rem; color:#999; font-weight:normal;">(5초마다 자동으로 확인합니다)</span>
         </p>
         <button class="save-user-btn" onclick="closeSuccessModal()">창 닫기 (추가 주문)</button>
     </div>
@@ -118,6 +119,7 @@
 
     let cart = [];
     let currentUser = { name: "", phone: "" };
+    let pollingInterval = null;
 
     const grid = document.getElementById('menu-grid');
     menuData.forEach(item => {
@@ -136,7 +138,6 @@
         const name = document.getElementById('userNameInput').value.trim();
         const phone = document.getElementById('userPhoneInput').value.trim();
         if (!name || !phone) return alert("정보를 입력해 주세요.");
-        // 사용자 정보는 편의를 위해 30일 유지 (수정 없음)
         setCookie("kiosk_username", name, 30*24); 
         setCookie("kiosk_phone", phone, 30*24);
         currentUser.name = name; currentUser.phone = phone;
@@ -178,6 +179,7 @@
     function closeModal() { document.getElementById('orderModal').style.display = 'none'; }
     
     function closeSuccessModal() { 
+        stopPolling();
         document.getElementById('successModal').style.display = 'none'; 
     }
 
@@ -199,18 +201,35 @@
                 })
             });
 
-            // ✨ [수정됨] 쿠키 유지 시간을 2시간으로 설정
             setCookie("active_order_id", newOrderId, 2); 
 
             closeModal();
             cart = []; updateUI();
             
-            // 팝업 즉시 표시
             showStatusPopup(newOrderId, null);
+            startPolling(newOrderId); // 폴링 시작
 
         } catch (e) {
             alert("전송 오류. 다시 시도해 주세요.");
             btn.innerText = "확인"; btn.disabled = false;
+        }
+    }
+
+    // --- ✨ 5초마다 상태 확인 ---
+    function startPolling(orderId) {
+        if (pollingInterval) clearInterval(pollingInterval);
+        
+        // 5초(5000ms)로 변경
+        pollingInterval = setInterval(() => {
+            checkOrderStatus(orderId);
+            console.log("5초 자동 확인 중..."); 
+        }, 5000);
+    }
+
+    function stopPolling() {
+        if (pollingInterval) {
+            clearInterval(pollingInterval);
+            pollingInterval = null;
         }
     }
 
@@ -224,6 +243,7 @@
                 showStatusPopup(orderId, data.receptionNo);
             } else {
                 setCookie("active_order_id", "", -1);
+                stopPolling();
             }
         } catch (e) {
             console.error("상태 확인 실패", e);
@@ -247,7 +267,7 @@
         } else {
             title.innerText = "⏳ 주문 대기중";
             rArea.style.display = 'none';
-            msg.innerHTML = "주문이 전송되었습니다.<br>접수번호가 표출될 때까지 잠시만 기다려주세요.";
+            msg.innerHTML = "주문이 전송되었습니다.<br>접수번호가 표출될 때까지 잠시만 기다려주세요.<br><span style='font-size:0.8rem; color:#999; font-weight:normal;'>(5초마다 자동으로 확인합니다)</span>";
         }
     }
 
@@ -262,7 +282,6 @@
         return `${y}${m}${d}${h}${mi}${s}${ms}${rnd}`;
     }
 
-    // 쿠키 설정 함수 (h: 시간)
     function setCookie(n, v, h) {
         const d = new Date(); d.setTime(d.getTime() + (h*60*60*1000));
         document.cookie = `${n}=${encodeURIComponent(v)};expires=${d.toUTCString()};path=/`;
@@ -276,10 +295,10 @@
     window.onload = () => {
         checkUserInfo();
         
-        // 접속 시 쿠키 확인
         const activeOrderId = getCookie("active_order_id");
         if (activeOrderId) {
             checkOrderStatus(activeOrderId);
+            startPolling(activeOrderId);
         }
     }
 </script>
