@@ -108,6 +108,7 @@
             font-size: 1.1rem; font-weight: bold; cursor: pointer;
         }
 
+        /* 공통 모달 스타일 */
         .modal {
             display: none; position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -135,6 +136,27 @@
             text-align: left; background: #f9f9f9; padding: 15px;
             border-radius: 10px; margin: 15px 0; max-height: 200px; overflow-y: auto;
         }
+
+        /* ✨ 완료 팝업 전용 스타일 (New) */
+        #successModal .modal-content {
+            border: 2px solid var(--primary-color);
+            padding: 40px 20px;
+        }
+        
+        .success-title {
+            color: var(--primary-color); font-size: 1.5rem; margin-bottom: 10px;
+        }
+        
+        .order-id-display {
+            font-size: 1.1rem; font-weight: bold; background: #f1f2f6;
+            padding: 10px; border-radius: 8px; margin: 15px 0; word-break: break-all;
+        }
+        
+        .waiting-msg {
+            font-size: 1.1rem; color: #333; line-height: 1.6; margin-bottom: 30px;
+            font-weight: bold;
+        }
+
     </style>
 </head>
 <body>
@@ -176,9 +198,21 @@
     </div>
 </div>
 
+<div class="modal" id="successModal" style="z-index: 3000;">
+    <div class="modal-content">
+        <h2 class="success-title">✅ 주문 완료</h2>
+        <div class="order-id-display">주문번호<br><span id="displayOrderId" style="color:#333; font-size:0.9rem;"></span></div>
+        <p class="waiting-msg">
+            주문 접수중입니다.<br>
+            접수된 후 접수번호가 표출 됩니다.
+        </p>
+        <button class="save-user-btn" onclick="finishOrder()">추가 주문하기</button>
+    </div>
+</div>
+
 <script>
     // ⚠️ 수정된 GAS 배포 URL을 여기에 넣으세요!
-    const GAS_URL = "여기에_URL을_붙여넣으세요";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycby2V7PTAbMw2rcK35Qkt58uR1ewsWxGUDuNeami11-pGtGOZJ_Vape_REPXflucT6YNcw/exec";
 
     const unifiedImage = "https://www.nordicnest.kr/assets/blobs/lyngby-porceln-23-cm/33618-03-01-2902fdeb01.jpg";
 
@@ -278,25 +312,27 @@
 
     function closeModal() { document.getElementById('orderModal').style.display = 'none'; }
 
-    // ✨ 초정밀 주문번호 생성 함수 (Web Crypto API 사용)
+    // 완료 모달 닫고 리셋하는 함수
+    function finishOrder() {
+        document.getElementById('successModal').style.display = 'none';
+        cart = []; 
+        updateUI();
+        location.reload(); // 새로고침하여 초기화
+    }
+
+    // 초정밀 주문번호 생성
     function generateOrderId() {
         const now = new Date();
-        // 날짜/시간 부분
         const yyyy = now.getFullYear();
         const mm = String(now.getMonth() + 1).padStart(2, '0');
         const dd = String(now.getDate()).padStart(2, '0');
         const hh = String(now.getHours()).padStart(2, '0');
         const min = String(now.getMinutes()).padStart(2, '0');
         const ss = String(now.getSeconds()).padStart(2, '0');
-        const mss = String(now.getMilliseconds()).padStart(3, '0'); // 밀리초(3자리)
-
-        // 보안 난수 생성 (마이크로/나노초 대용으로 사용)
-        // 32비트 난수를 생성하여 4자리 이상으로 자릅니다.
+        const mss = String(now.getMilliseconds()).padStart(3, '0');
         const array = new Uint32Array(1);
         window.crypto.getRandomValues(array);
         const secureRandom = array[0].toString().slice(0, 4).padEnd(4, '0');
-
-        // 예: 20240129123001 + 123(밀리초) + 4829(보안난수)
         return `${yyyy}${mm}${dd}${hh}${min}${ss}${mss}${secureRandom}`;
     }
 
@@ -307,7 +343,6 @@
         const orderSummary = cart.map(i => i.name).join(', ');
         const totalAmount = cart.reduce((sum, i) => sum + i.price, 0).toLocaleString() + "원";
         
-        // 정밀 주문번호 생성
         const newOrderId = generateOrderId();
 
         const payload = {
@@ -325,10 +360,16 @@
                 body: JSON.stringify(payload)
             });
 
+            // 1. 쿠키 저장
             setCookie("lastOrder", orderSummary, 1);
-            alert(`[주문접수완료]\n주문번호: ${newOrderId}\n\n${currentUser.name}님, 곧 준비해 드릴게요!`);
-            cart = []; updateUI();
-            location.reload(); 
+            
+            // 2. 주문 확인창 닫기
+            closeModal();
+
+            // 3. ✨ 주문 완료 팝업 띄우기 (alert 대체)
+            document.getElementById('displayOrderId').innerText = newOrderId;
+            document.getElementById('successModal').style.display = 'flex';
+
         } catch (e) {
             alert("전송 오류 발생. 다시 시도해 주세요.");
             btn.innerText = "확인"; btn.disabled = false;
